@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: profile_cms_db
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - profile_cms_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build: .
+    container_name: profile_cms_backend_api
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    ports:
+      - "3000:8000"
+volumes:
+  profile_cms_data:
